@@ -1,0 +1,1160 @@
+================================================================================
+  SIMON JOSEPH — PORTFOLIO WEBSITE
+  All source code in one file
+================================================================================
+
+Each section below is a separate file. The file path is shown at the top
+of each block so you know where it belongs in the project.
+
+================================================================================
+FILE 1: src/index.css
+(Colors, fonts, animations, and utility classes)
+================================================================================
+
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;700;900&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap');
+@import "tailwindcss";
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+  --color-background: hsl(var(--background));
+  --color-foreground: hsl(var(--foreground));
+  --color-border: hsl(var(--border));
+  --color-input: hsl(var(--input));
+  --color-ring: hsl(var(--ring));
+  --color-card: hsl(var(--card));
+  --color-card-foreground: hsl(var(--card-foreground));
+  --color-card-border: hsl(var(--card-border));
+  --color-popover: hsl(var(--popover));
+  --color-popover-foreground: hsl(var(--popover-foreground));
+  --color-popover-border: hsl(var(--popover-border));
+  --color-primary: hsl(var(--primary));
+  --color-primary-foreground: hsl(var(--primary-foreground));
+  --color-primary-border: var(--primary-border);
+  --color-secondary: hsl(var(--secondary));
+  --color-secondary-foreground: hsl(var(--secondary-foreground));
+  --color-secondary-border: var(--secondary-border);
+  --color-muted: hsl(var(--muted));
+  --color-muted-foreground: hsl(var(--muted-foreground));
+  --color-muted-border: var(--muted-border);
+  --color-accent: hsl(var(--accent));
+  --color-accent-foreground: hsl(var(--accent-foreground));
+  --color-accent-border: var(--accent-border);
+  --color-destructive: hsl(var(--destructive));
+  --color-destructive-foreground: hsl(var(--destructive-foreground));
+  --color-destructive-border: var(--destructive-border);
+  --font-sans: 'Plus Jakarta Sans', sans-serif;
+  --font-display: 'Outfit', sans-serif;
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --animate-gradient-x: gradient-x 15s ease infinite;
+  --animate-float: float 6s ease-in-out infinite;
+  --animate-pulse-glow: pulse-glow 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+:root {
+  --background: 230 25% 4%;
+  --foreground: 210 40% 98%;
+  --card: 230 20% 7%;
+  --card-foreground: 210 40% 98%;
+  --card-border: 230 20% 12%;
+  --popover: 230 20% 6%;
+  --popover-foreground: 210 40% 98%;
+  --popover-border: 230 20% 12%;
+  --primary: 188 86% 53%;
+  --primary-foreground: 230 25% 4%;
+  --secondary: 270 95% 60%;
+  --secondary-foreground: 210 40% 98%;
+  --muted: 230 20% 12%;
+  --muted-foreground: 215 20% 65%;
+  --accent: 320 90% 55%;
+  --accent-foreground: 210 40% 98%;
+  --destructive: 0 84% 60%;
+  --destructive-foreground: 210 40% 98%;
+  --border: 230 20% 15%;
+  --input: 230 20% 12%;
+  --ring: 188 86% 53%;
+  --radius: 0.75rem;
+}
+
+@layer base {
+  * {
+    @apply border-border;
+    cursor: none;
+  }
+  body {
+    @apply bg-background text-foreground font-sans antialiased overflow-x-hidden;
+    background-image:
+      radial-gradient(circle at 15% 50%, rgba(0, 212, 255, 0.03), transparent 25%),
+      radial-gradient(circle at 85% 30%, rgba(138, 43, 226, 0.03), transparent 25%);
+    background-attachment: fixed;
+  }
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-display tracking-tight;
+  }
+  ::selection {
+    background: hsl(var(--primary) / 0.3);
+    color: hsl(var(--primary));
+  }
+}
+
+@layer utilities {
+  .text-glow {
+    text-shadow: 0 0 20px hsl(var(--primary) / 0.5);
+  }
+  .text-glow-secondary {
+    text-shadow: 0 0 20px hsl(var(--secondary) / 0.5);
+  }
+  .box-glow {
+    box-shadow: 0 0 30px -5px hsl(var(--primary) / 0.3);
+  }
+  .glass-panel {
+    @apply bg-card/60 backdrop-blur-xl border border-white/5;
+  }
+  .glass-panel-hover {
+    @apply hover:bg-card/80 hover:border-primary/30 transition-all duration-300;
+  }
+  .hide-scrollbar::-webkit-scrollbar { display: none; }
+  .hide-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+}
+
+@keyframes gradient-x {
+  0%, 100% { background-size: 200% 200%; background-position: left center; }
+  50%       { background-size: 200% 200%; background-position: right center; }
+}
+@keyframes float {
+  0%   { transform: translateY(0px); }
+  50%  { transform: translateY(-20px); }
+  100% { transform: translateY(0px); }
+}
+@keyframes pulse-glow {
+  0%, 100% { opacity: 1;   box-shadow: 0 0 20px 0px  hsl(var(--primary) / 0.5); }
+  50%       { opacity: 0.7; box-shadow: 0 0 40px 10px hsl(var(--primary) / 0.8); }
+}
+
+
+================================================================================
+FILE 2: src/App.tsx
+(Entry point — sets up routing)
+================================================================================
+
+import { Switch, Route, Router as WouterRouter } from "wouter";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { Toaster } from "@/components/ui/toaster";
+import { TooltipProvider } from "@/components/ui/tooltip";
+import Portfolio from "@/pages/Portfolio";
+import NotFound from "@/pages/not-found";
+
+const queryClient = new QueryClient();
+
+function Router() {
+  return (
+    <Switch>
+      <Route path="/" component={Portfolio} />
+      <Route component={NotFound} />
+    </Switch>
+  );
+}
+
+function App() {
+  return (
+    <QueryClientProvider client={queryClient}>
+      <TooltipProvider>
+        <WouterRouter base={import.meta.env.BASE_URL.replace(/\/$/, "")}>
+          <Router />
+        </WouterRouter>
+        <Toaster />
+      </TooltipProvider>
+    </QueryClientProvider>
+  );
+}
+
+export default App;
+
+
+================================================================================
+FILE 3: src/pages/Portfolio.tsx
+(Assembles all sections of the page together)
+================================================================================
+
+import { CustomCursor } from "@/components/ui/CustomCursor";
+import { AnimatedBackground } from "@/components/ui/AnimatedBackground";
+import { Navigation } from "@/components/ui/Navigation";
+import { Hero } from "@/components/sections/Hero";
+import { About } from "@/components/sections/About";
+import { Skills } from "@/components/sections/Skills";
+import { Projects } from "@/components/sections/Projects";
+import { Goals } from "@/components/sections/Goals";
+import { FunFacts } from "@/components/sections/FunFacts";
+import { Contact } from "@/components/sections/Contact";
+
+export default function Portfolio() {
+  return (
+    <div className="min-h-screen bg-background text-foreground selection:bg-primary/30">
+      <CustomCursor />
+      <AnimatedBackground />
+      <Navigation />
+      <main>
+        <Hero />
+        <About />
+        <Skills />
+        <Projects />
+        <Goals />
+        <FunFacts />
+        <Contact />
+      </main>
+    </div>
+  );
+}
+
+
+================================================================================
+FILE 4: src/components/ui/CustomCursor.tsx
+(The custom glowing cursor that follows your mouse)
+================================================================================
+
+import { useEffect, useRef } from "react";
+
+export function CustomCursor() {
+  const dotRef = useRef<HTMLDivElement>(null);
+  const ringRef = useRef<HTMLDivElement>(null);
+  const ringPos = useRef({ x: 0, y: 0 });
+  const mousePos = useRef({ x: 0, y: 0 });
+  const rafRef = useRef<number>(0);
+
+  useEffect(() => {
+    const onMouseMove = (e: MouseEvent) => {
+      mousePos.current = { x: e.clientX, y: e.clientY };
+      if (dotRef.current) {
+        dotRef.current.style.transform = `translate(${e.clientX - 6}px, ${e.clientY - 6}px)`;
+      }
+    };
+
+    const animate = () => {
+      ringPos.current.x += (mousePos.current.x - ringPos.current.x) * 0.12;
+      ringPos.current.y += (mousePos.current.y - ringPos.current.y) * 0.12;
+      if (ringRef.current) {
+        ringRef.current.style.transform = `translate(${ringPos.current.x - 20}px, ${ringPos.current.y - 20}px)`;
+      }
+      rafRef.current = requestAnimationFrame(animate);
+    };
+
+    const onMouseOver = (e: MouseEvent) => {
+      const target = e.target as HTMLElement;
+      const isInteractive =
+        target.tagName === "BUTTON" || target.tagName === "A" ||
+        target.closest("button") || target.closest("a") ||
+        target.classList.contains("interactive");
+      if (dotRef.current) dotRef.current.style.scale = isInteractive ? "2" : "1";
+      if (ringRef.current) ringRef.current.style.opacity = isInteractive ? "0" : "1";
+    };
+
+    window.addEventListener("mousemove", onMouseMove);
+    window.addEventListener("mouseover", onMouseOver);
+    rafRef.current = requestAnimationFrame(animate);
+
+    return () => {
+      window.removeEventListener("mousemove", onMouseMove);
+      window.removeEventListener("mouseover", onMouseOver);
+      cancelAnimationFrame(rafRef.current);
+    };
+  }, []);
+
+  return (
+    <>
+      <div
+        ref={dotRef}
+        className="fixed top-0 left-0 w-3 h-3 bg-primary rounded-full pointer-events-none z-[9999] mix-blend-screen"
+        style={{ transition: "scale 0.15s ease" }}
+      />
+      <div
+        ref={ringRef}
+        className="fixed top-0 left-0 w-10 h-10 border border-primary/50 rounded-full pointer-events-none z-[9998]"
+        style={{ transition: "opacity 0.15s ease" }}
+      />
+    </>
+  );
+}
+
+
+================================================================================
+FILE 5: src/components/ui/AnimatedBackground.tsx
+(Floating particles and glowing orbs in the background)
+================================================================================
+
+import { useEffect, useState } from "react";
+import { motion } from "framer-motion";
+
+export function AnimatedBackground() {
+  const [particles, setParticles] = useState<Array<{
+    id: number; x: number; y: number; size: number; delay: number; duration: number
+  }>>([]);
+
+  useEffect(() => {
+    const newParticles = Array.from({ length: 8 }).map((_, i) => ({
+      id: i,
+      x: Math.random() * 100,
+      y: Math.random() * 100,
+      size: Math.random() * 3 + 1,
+      delay: Math.random() * 5,
+      duration: Math.random() * 12 + 14,
+    }));
+    setParticles(newParticles);
+  }, []);
+
+  return (
+    <div className="fixed inset-0 z-[-1] overflow-hidden pointer-events-none opacity-40">
+      <div className="absolute inset-0 bg-[linear-gradient(to_right,#4f4f4f10_1px,transparent_1px),linear-gradient(to_bottom,#4f4f4f10_1px,transparent_1px)] bg-[size:4rem_4rem] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_0%,#000_70%,transparent_100%)]" />
+      {particles.map((particle) => (
+        <motion.div
+          key={particle.id}
+          className="absolute rounded-full bg-primary/20"
+          style={{
+            width: particle.size,
+            height: particle.size,
+            left: `${particle.x}%`,
+            top: `${particle.y}%`,
+            willChange: "transform, opacity",
+          }}
+          animate={{ y: ["0vh", "-100vh"], opacity: [0, 0.7, 0] }}
+          transition={{ duration: particle.duration, repeat: Infinity, delay: particle.delay, ease: "linear" }}
+        />
+      ))}
+      <div className="absolute top-[-10%] left-[-10%] w-[40vw] h-[40vw] rounded-full bg-primary/8 blur-[80px]" />
+      <div className="absolute bottom-[-10%] right-[-10%] w-[45vw] h-[45vw] rounded-full bg-secondary/8 blur-[90px]" />
+    </div>
+  );
+}
+
+
+================================================================================
+FILE 6: src/components/ui/Navigation.tsx
+(Top navigation bar with scroll detection and mobile menu)
+================================================================================
+
+import { useState, useEffect } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { Menu, X, Terminal, User, Code2, Target, Mail } from "lucide-react";
+import { cn } from "@/lib/utils";
+
+const links = [
+  { name: "Home",    href: "#home",    icon: Terminal },
+  { name: "About",   href: "#about",   icon: User },
+  { name: "Skills",  href: "#skills",  icon: Code2 },
+  { name: "Vision",  href: "#vision",  icon: Target },
+  { name: "Contact", href: "#contact", icon: Mail },
+];
+
+export function Navigation() {
+  const [isScrolled, setIsScrolled] = useState(false);
+  const [activeSection, setActiveSection] = useState("home");
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 50);
+      const sections = links.map(link => link.href.substring(1));
+      let current = "";
+      for (const section of sections) {
+        const element = document.getElementById(section);
+        if (element && window.scrollY >= element.offsetTop - 200) current = section;
+      }
+      if (current) setActiveSection(current);
+    };
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
+  const scrollTo = (href: string) => {
+    setMobileMenuOpen(false);
+    const element = document.querySelector(href);
+    if (element) {
+      window.scrollTo({ top: (element as HTMLElement).offsetTop - 80, behavior: "smooth" });
+    }
+  };
+
+  return (
+    <>
+      <motion.header
+        className={cn(
+          "fixed top-0 left-0 right-0 z-50 transition-all duration-300 border-b border-transparent",
+          isScrolled ? "bg-background/80 backdrop-blur-md border-white/10 shadow-lg py-3" : "bg-transparent py-5"
+        )}
+        initial={{ y: -100 }}
+        animate={{ y: 0 }}
+        transition={{ duration: 0.6, ease: "easeOut" }}
+      >
+        <div className="max-w-7xl mx-auto px-6 md:px-12 flex items-center justify-between">
+          <div
+            className="text-xl font-display font-bold tracking-wider cursor-pointer interactive flex items-center gap-2"
+            onClick={() => scrollTo("#home")}
+          >
+            <span className="text-primary">&lt;</span>
+            Simon<span className="text-foreground/80 font-mono text-sm">/&gt;</span>
+          </div>
+
+          <nav className="hidden md:flex items-center gap-1">
+            {links.map((link) => {
+              const isActive = activeSection === link.href.substring(1);
+              return (
+                <button
+                  key={link.name}
+                  onClick={() => scrollTo(link.href)}
+                  className={cn(
+                    "px-4 py-2 rounded-full text-sm font-medium transition-all duration-300 relative interactive group",
+                    isActive ? "text-primary" : "text-muted-foreground hover:text-foreground"
+                  )}
+                >
+                  {isActive && (
+                    <motion.span
+                      layoutId="nav-pill"
+                      className="absolute inset-0 bg-primary/10 rounded-full z-[-1] border border-primary/20"
+                      transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
+                    />
+                  )}
+                  {link.name}
+                </button>
+              );
+            })}
+          </nav>
+
+          <button
+            className="md:hidden text-foreground interactive p-2 rounded-md hover:bg-white/5"
+            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+          >
+            {mobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
+          </button>
+        </div>
+      </motion.header>
+
+      <AnimatePresence>
+        {mobileMenuOpen && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-40 bg-background/90 md:hidden flex flex-col items-center justify-center"
+          >
+            <div className="flex flex-col items-center gap-6 w-full px-8">
+              {links.map((link, i) => (
+                <motion.button
+                  key={link.name}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: 20 }}
+                  transition={{ delay: i * 0.1 }}
+                  onClick={() => scrollTo(link.href)}
+                  className={cn(
+                    "w-full py-4 text-2xl font-display flex items-center justify-center gap-4 rounded-xl border border-transparent interactive",
+                    activeSection === link.href.substring(1)
+                      ? "bg-primary/10 text-primary border-primary/20"
+                      : "text-muted-foreground hover:text-foreground hover:bg-white/5"
+                  )}
+                >
+                  <link.icon size={24} />
+                  {link.name}
+                </motion.button>
+              ))}
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </>
+  );
+}
+
+
+================================================================================
+FILE 7: src/components/sections/Hero.tsx
+(Opening hero section with full-body photo, name, and buttons)
+================================================================================
+
+import { motion } from "framer-motion";
+import { ChevronDown, Sparkles } from "lucide-react";
+
+export function Hero() {
+  const text = "Hi! I'm Simon Joseph, a college student passionate about technology, coding, and exploring new ideas that can make a difference in the world.";
+  const words = text.split(" ");
+
+  return (
+    <section id="home" className="relative min-h-screen flex items-center justify-center pt-20 overflow-hidden">
+      <div className="absolute inset-0 z-[-2]">
+        <img
+          src={`${import.meta.env.BASE_URL}images/hero-bg.png`}
+          alt="Futuristic background"
+          className="w-full h-full object-cover opacity-30 mix-blend-screen"
+        />
+        <div className="absolute inset-0 bg-gradient-to-b from-background/40 via-background/80 to-background" />
+      </div>
+
+      <div className="max-w-7xl mx-auto px-6 md:px-12 w-full grid lg:grid-cols-2 gap-12 items-center">
+
+        <div className="flex flex-col items-start text-left space-y-6">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.2 }}
+            className="inline-flex items-center gap-2 px-4 py-2 rounded-full glass-panel border-primary/30 text-primary text-sm font-medium"
+          >
+            <Sparkles size={16} className="animate-pulse" />
+            <span>Available for collaborations</span>
+          </motion.div>
+
+          <motion.h1
+            initial={{ opacity: 0, x: -50 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.7, ease: "easeOut", delay: 0.3 }}
+            className="text-5xl md:text-7xl lg:text-8xl font-black font-display leading-[1.1]"
+          >
+            SIMON<br/>
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary via-cyan-300 to-secondary animate-gradient-x text-glow">
+              JOSEPH
+            </span>
+          </motion.h1>
+
+          <motion.h2
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.5, delay: 0.6 }}
+            className="text-xl md:text-2xl font-mono text-muted-foreground border-l-4 border-secondary pl-4"
+          >
+            Aspiring Tech Innovator <br className="md:hidden" />
+            <span className="text-foreground hidden md:inline"> | </span>
+            Future Game-Changer
+          </motion.h2>
+
+          <motion.div
+            className="text-lg text-foreground/80 max-w-xl leading-relaxed"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 1, delay: 0.8 }}
+          >
+            {words.map((word, i) => (
+              <motion.span
+                key={i}
+                initial={{ opacity: 0, filter: "blur(10px)" }}
+                animate={{ opacity: 1, filter: "blur(0px)" }}
+                transition={{ duration: 0.25, delay: 0.8 + i * 0.03 }}
+                className="inline-block mr-1.5"
+              >
+                {word}
+              </motion.span>
+            ))}
+          </motion.div>
+
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 1.5 }}
+            className="pt-4 flex gap-4"
+          >
+            <button
+              onClick={() => document.getElementById("projects")?.scrollIntoView({ behavior: "smooth" })}
+              className="interactive px-8 py-4 bg-primary text-primary-foreground font-bold rounded-xl box-glow hover:scale-105 transition-transform duration-300 flex items-center gap-2"
+            >
+              Explore Projects
+            </button>
+            <button
+              onClick={() => document.getElementById("contact")?.scrollIntoView({ behavior: "smooth" })}
+              className="interactive px-8 py-4 glass-panel glass-panel-hover font-bold rounded-xl transition-all duration-300 hover:text-primary"
+            >
+              Contact Me
+            </button>
+          </motion.div>
+        </div>
+
+        <motion.div
+          initial={{ opacity: 0, scale: 0.8 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 1, delay: 0.5, type: "spring" }}
+          className="relative flex justify-center items-center h-[500px] lg:h-[600px]"
+        >
+          <motion.div
+            animate={{ rotate: 360 }}
+            transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
+            className="absolute inset-0 border border-primary/20 rounded-full border-dashed"
+          />
+          <motion.div
+            animate={{ rotate: -360 }}
+            transition={{ duration: 30, repeat: Infinity, ease: "linear" }}
+            className="absolute inset-8 border border-secondary/20 rounded-full"
+          />
+
+          <div className="relative w-80 h-96 rounded-3xl overflow-hidden border-2 border-primary/40 shadow-[0_0_60px_rgba(0,212,255,0.35)] z-10 group">
+            <motion.div className="absolute inset-0 bg-primary mix-blend-overlay opacity-0 group-hover:opacity-30 transition-opacity duration-500 z-10" />
+            <img
+              src={`${import.meta.env.BASE_URL}images/simon-photo2.jpg`}
+              alt="Simon Joseph"
+              className="w-full h-full object-cover object-top transform group-hover:scale-105 transition-transform duration-700"
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-background/60 via-transparent to-transparent z-[5]" />
+          </div>
+
+          <motion.div
+            animate={{ y: [-10, 10, -10] }}
+            transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
+            className="absolute top-20 right-10 glass-panel px-4 py-2 rounded-lg border-primary/30 text-xs font-mono font-bold text-primary shadow-lg"
+          >
+            {'<DEV />'}
+          </motion.div>
+          <motion.div
+            animate={{ y: [10, -10, 10] }}
+            transition={{ duration: 5, repeat: Infinity, ease: "easeInOut", delay: 1 }}
+            className="absolute bottom-32 left-10 glass-panel px-4 py-2 rounded-lg border-secondary/30 text-xs font-mono font-bold text-secondary shadow-lg"
+          >
+            {'{ INNOVATOR }'}
+          </motion.div>
+        </motion.div>
+
+      </div>
+
+      <motion.div
+        className="absolute bottom-10 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 text-muted-foreground interactive"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 2, duration: 1 }}
+        onClick={() => document.getElementById("about")?.scrollIntoView({ behavior: "smooth" })}
+      >
+        <span className="text-xs uppercase tracking-widest font-mono">Scroll</span>
+        <motion.div animate={{ y: [0, 10, 0] }} transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}>
+          <ChevronDown size={24} className="text-primary" />
+        </motion.div>
+      </motion.div>
+    </section>
+  );
+}
+
+
+================================================================================
+FILE 8: src/components/sections/About.tsx
+(About Me section with side-facing photo)
+================================================================================
+
+import { motion } from "framer-motion";
+import { Gamepad2, BrainCircuit, Activity } from "lucide-react";
+
+export function About() {
+  return (
+    <section id="about" className="py-24 relative">
+      <div className="max-w-7xl mx-auto px-6 md:px-12">
+        <motion.div
+          initial={{ opacity: 0, y: 50 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-100px" }}
+          transition={{ duration: 0.6 }}
+          className="mb-16"
+        >
+          <h2 className="text-sm font-mono text-primary tracking-widest uppercase mb-2">01. Identity</h2>
+          <h3 className="text-4xl md:text-5xl font-display font-bold">About Me</h3>
+          <div className="h-1 w-20 bg-gradient-to-r from-primary to-transparent mt-6" />
+        </motion.div>
+
+        <div className="grid md:grid-cols-12 gap-12 items-center">
+          <motion.div
+            className="md:col-span-7 space-y-6 text-lg text-muted-foreground leading-relaxed"
+            initial={{ opacity: 0, x: -30 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6, delay: 0.2 }}
+          >
+            <p>I've always been fascinated by how technology shapes our lives. Whether it's coding a small project, understanding new software, or imagining futuristic innovations, I enjoy every moment of the learning process.</p>
+            <p>I love combining creativity and logic to solve problems and build projects that challenge the ordinary. For me, tech isn't just about writing lines of code; it's about building solutions that make an impact.</p>
+            <p className="p-4 border-l-2 border-secondary bg-secondary/5 rounded-r-lg text-foreground">
+              Outside tech, I'm an active person—I play football and basketball, and I'm a massive gamer at heart.
+            </p>
+
+            <div className="grid grid-cols-3 gap-4 pt-2">
+              <div className="glass-panel p-4 rounded-xl border border-white/5 hover:border-primary/50 transition-colors group flex flex-col items-center text-center">
+                <Activity className="w-6 h-6 text-primary mb-2 group-hover:scale-110 transition-transform" />
+                <h4 className="text-sm font-bold text-foreground">Active</h4>
+              </div>
+              <div className="glass-panel p-4 rounded-xl border border-white/5 hover:border-secondary/50 transition-colors group flex flex-col items-center text-center">
+                <BrainCircuit className="w-6 h-6 text-secondary mb-2 group-hover:rotate-12 transition-transform" />
+                <h4 className="text-sm font-bold text-foreground">Logic</h4>
+              </div>
+              <div className="glass-panel p-4 rounded-xl border border-white/5 hover:border-accent/50 transition-colors group flex flex-col items-center text-center">
+                <Gamepad2 className="w-6 h-6 text-accent mb-2 group-hover:-rotate-12 transition-transform" />
+                <h4 className="text-sm font-bold text-foreground">Gamer</h4>
+              </div>
+            </div>
+          </motion.div>
+
+          <motion.div
+            className="md:col-span-5 flex justify-center"
+            initial={{ opacity: 0, x: 30 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6, delay: 0.4 }}
+          >
+            <div className="relative group">
+              <div className="absolute -inset-1 bg-gradient-to-br from-primary/50 via-secondary/30 to-accent/50 rounded-3xl blur-xl opacity-60 group-hover:opacity-90 transition-opacity duration-500" />
+              <div className="relative rounded-3xl overflow-hidden border-2 border-primary/30 shadow-[0_0_40px_rgba(0,212,255,0.2)] w-64 md:w-72">
+                <img
+                  src={`${import.meta.env.BASE_URL}images/simon-photo1.jpg`}
+                  alt="Simon Joseph"
+                  className="w-full h-auto object-cover group-hover:scale-105 transition-transform duration-700"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-background/50 via-transparent to-transparent" />
+                <div className="absolute bottom-4 left-4 right-4">
+                  <span className="glass-panel px-3 py-1 rounded-full text-xs font-mono font-bold text-primary border border-primary/30">
+                    Simon Joseph
+                  </span>
+                </div>
+              </div>
+            </div>
+          </motion.div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+
+================================================================================
+FILE 9: src/components/sections/Skills.tsx
+(Animated skill bars and hobby cards)
+================================================================================
+
+import { motion } from "framer-motion";
+
+const techSkills = [
+  { name: "Programming & Problem Solving", level: 90, color: "bg-primary" },
+  { name: "Learning New Technologies",     level: 85, color: "bg-secondary" },
+  { name: "Exploring Innovative Ideas",    level: 95, color: "bg-accent" },
+];
+
+const hobbies = [
+  { name: "Gaming",          icon: "🎮" },
+  { name: "Football",        icon: "⚽" },
+  { name: "Basketball",      icon: "🏀" },
+  { name: "Staying Curious", icon: "🔍" },
+];
+
+export function Skills() {
+  return (
+    <section id="skills" className="py-24 relative bg-card/30">
+      <div className="max-w-7xl mx-auto px-6 md:px-12">
+        <div className="grid lg:grid-cols-2 gap-16">
+
+          <div>
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.5 }}
+              className="mb-12"
+            >
+              <h2 className="text-sm font-mono text-primary tracking-widest uppercase mb-2">02. Arsenal</h2>
+              <h3 className="text-4xl font-display font-bold">Tech & Coding</h3>
+            </motion.div>
+            <div className="space-y-8">
+              {techSkills.map((skill, index) => (
+                <motion.div
+                  key={skill.name}
+                  initial={{ opacity: 0, x: -30 }}
+                  whileInView={{ opacity: 1, x: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.5, delay: index * 0.1 }}
+                >
+                  <div className="flex justify-between mb-2">
+                    <span className="font-medium text-foreground">{skill.name}</span>
+                    <span className="font-mono text-muted-foreground">{skill.level}%</span>
+                  </div>
+                  <div className="h-3 w-full bg-background rounded-full overflow-hidden border border-white/5">
+                    <motion.div
+                      className={`h-full ${skill.color}`}
+                      initial={{ width: 0 }}
+                      whileInView={{ width: `${skill.level}%` }}
+                      viewport={{ once: true }}
+                      transition={{ duration: 1, delay: 0.3 + index * 0.2, ease: "easeOut" }}
+                    />
+                  </div>
+                </motion.div>
+              ))}
+            </div>
+          </div>
+
+          <div>
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.5, delay: 0.2 }}
+              className="mb-12"
+            >
+              <h2 className="text-sm font-mono text-secondary tracking-widest uppercase mb-2">03. Off-Screen</h2>
+              <h3 className="text-4xl font-display font-bold">Hobbies & Lifestyle</h3>
+            </motion.div>
+            <div className="grid grid-cols-2 gap-4">
+              {hobbies.map((hobby, index) => (
+                <motion.div
+                  key={hobby.name}
+                  initial={{ opacity: 0, scale: 0.9 }}
+                  whileInView={{ opacity: 1, scale: 1 }}
+                  viewport={{ once: true }}
+                  whileHover={{ y: -5, scale: 1.02 }}
+                  transition={{ duration: 0.3, delay: index * 0.1 }}
+                  className="interactive glass-panel p-6 rounded-2xl flex flex-col items-center justify-center gap-4 border border-white/5 hover:border-secondary/40 hover:bg-secondary/5 group"
+                >
+                  <span className="text-4xl filter drop-shadow-lg group-hover:scale-110 transition-transform duration-300">
+                    {hobby.icon}
+                  </span>
+                  <span className="font-bold text-center">{hobby.name}</span>
+                </motion.div>
+              ))}
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+  );
+}
+
+
+================================================================================
+FILE 10: src/components/sections/Projects.tsx
+(3D tilt project cards)
+================================================================================
+
+import { motion, useMotionValue, useSpring, useTransform } from "framer-motion";
+import { ExternalLink, Github } from "lucide-react";
+import React from "react";
+
+const projects = [
+  {
+    title: "Personal Webpage",
+    description: "An interactive, mind-blowing portfolio designed to showcase my journey and skills using React and Framer Motion.",
+    image: "project-1.png",
+    tags: ["React", "Tailwind CSS", "Framer Motion"],
+    link: "#",
+    featured: true
+  },
+  {
+    title: "School Assignments",
+    description: "Various logical challenges and algorithmic problem-solving tasks completed during academic studies.",
+    image: "project-2.png",
+    tags: ["Algorithms", "Logic", "C++"],
+    link: "#",
+    featured: false
+  },
+  {
+    title: "Coding Exercises",
+    description: "Practice projects focusing on building functional UI components and learning new futuristic web technologies.",
+    image: "project-3.png",
+    tags: ["JavaScript", "UI/UX", "CSS"],
+    link: "#",
+    featured: false
+  }
+];
+
+const TiltCard = ({ project, index }: { project: any, index: number }) => {
+  const x = useMotionValue(0);
+  const y = useMotionValue(0);
+  const mouseXSpring = useSpring(x);
+  const mouseYSpring = useSpring(y);
+  const rotateX = useTransform(mouseYSpring, [-0.5, 0.5], ["10deg", "-10deg"]);
+  const rotateY = useTransform(mouseXSpring, [-0.5, 0.5], ["-10deg", "10deg"]);
+
+  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    const rect = e.currentTarget.getBoundingClientRect();
+    const width = rect.width;
+    const height = rect.height;
+    const mouseX = e.clientX - rect.left;
+    const mouseY = e.clientY - rect.top;
+    const xPct = mouseX / width - 0.5;
+    const yPct = mouseY / height - 0.5;
+    x.set(xPct);
+    y.set(yPct);
+  };
+
+  const handleMouseLeave = () => { x.set(0); y.set(0); };
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 50 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: "-50px" }}
+      transition={{ duration: 0.6, delay: index * 0.2 }}
+      style={{ perspective: 1000 }}
+      className="interactive h-full"
+    >
+      <motion.div
+        onMouseMove={handleMouseMove}
+        onMouseLeave={handleMouseLeave}
+        style={{ rotateX, rotateY, transformStyle: "preserve-3d" }}
+        className="relative h-full glass-panel rounded-2xl overflow-hidden border border-white/10 group cursor-pointer"
+      >
+        <div className="absolute inset-0 z-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 bg-gradient-to-tr from-primary/20 via-transparent to-secondary/20 pointer-events-none" />
+
+        <div className="h-48 overflow-hidden relative" style={{ transform: "translateZ(30px)" }}>
+          <div className="absolute inset-0 bg-background/50 z-10 group-hover:bg-transparent transition-colors duration-500" />
+          <img
+            src={`${import.meta.env.BASE_URL}images/${project.image}`}
+            alt={project.title}
+            className="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-700"
+          />
+          {project.featured && (
+            <div className="absolute top-4 right-4 z-20 bg-primary/90 text-primary-foreground text-xs font-bold px-3 py-1 rounded-full shadow-lg">
+              Featured
+            </div>
+          )}
+        </div>
+
+        <div className="p-6 relative z-10 bg-card/80 backdrop-blur-sm h-[calc(100%-12rem)] flex flex-col" style={{ transform: "translateZ(40px)" }}>
+          <h4 className="text-2xl font-bold mb-2 group-hover:text-primary transition-colors">{project.title}</h4>
+          <p className="text-muted-foreground text-sm mb-6 flex-grow">{project.description}</p>
+          <div className="flex flex-wrap gap-2 mb-6">
+            {project.tags.map((tag: string) => (
+              <span key={tag} className="text-xs font-mono px-2 py-1 rounded-md bg-white/5 border border-white/10 text-foreground/80">
+                {tag}
+              </span>
+            ))}
+          </div>
+          <div className="flex items-center gap-4 mt-auto">
+            <button className="p-2 rounded-full bg-white/5 hover:bg-primary/20 hover:text-primary transition-colors">
+              <Github size={18} />
+            </button>
+            <button className="p-2 rounded-full bg-white/5 hover:bg-secondary/20 hover:text-secondary transition-colors">
+              <ExternalLink size={18} />
+            </button>
+          </div>
+        </div>
+      </motion.div>
+    </motion.div>
+  );
+};
+
+export function Projects() {
+  return (
+    <section id="projects" className="py-24 relative">
+      <div className="max-w-7xl mx-auto px-6 md:px-12">
+        <motion.div
+          initial={{ opacity: 0, y: 50 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6 }}
+          className="mb-16 flex flex-col items-center text-center"
+        >
+          <h2 className="text-sm font-mono text-primary tracking-widest uppercase mb-2">04. Execution</h2>
+          <h3 className="text-4xl md:text-5xl font-display font-bold">Projects & Achievements</h3>
+          <p className="mt-4 text-muted-foreground max-w-2xl">
+            Even small steps count! Each project teaches me new lessons and brings me closer to my vision.
+          </p>
+        </motion.div>
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+          {projects.map((project, index) => (
+            <TiltCard key={project.title} project={project} index={index} />
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+
+================================================================================
+FILE 11: src/components/sections/Goals.tsx
+(Vision and goals quote section)
+================================================================================
+
+import { motion } from "framer-motion";
+import { Rocket, Target, Zap } from "lucide-react";
+
+export function Goals() {
+  return (
+    <section id="vision" className="py-32 relative overflow-hidden">
+      <div className="absolute inset-0 bg-gradient-to-b from-transparent via-primary/5 to-transparent" />
+      <div className="absolute right-0 top-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-secondary/10 blur-[150px] rounded-full pointer-events-none" />
+
+      <div className="max-w-4xl mx-auto px-6 md:px-12 relative z-10 text-center">
+        <motion.div
+          initial={{ scale: 0.8, opacity: 0 }}
+          whileInView={{ scale: 1, opacity: 1 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.8, type: "spring" }}
+          className="inline-flex items-center justify-center p-4 rounded-full bg-primary/10 text-primary mb-8 border border-primary/20"
+        >
+          <Target size={32} />
+        </motion.div>
+
+        <motion.h3
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6, delay: 0.2 }}
+          className="text-3xl md:text-5xl font-display font-black mb-8 leading-tight"
+        >
+          My Goals & <span className="text-transparent bg-clip-text bg-gradient-to-r from-secondary to-primary">Vision</span>
+        </motion.h3>
+
+        <motion.div
+          className="relative"
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.8, delay: 0.4 }}
+        >
+          <span className="absolute -top-10 -left-6 text-8xl text-white/5 font-serif font-bold pointer-events-none">"</span>
+          <p className="text-xl md:text-2xl text-foreground/80 leading-relaxed italic">
+            I'm on a journey to grow as a developer and tech enthusiast, learning every day and applying my skills to real-world challenges.
+            <strong className="text-foreground block mt-6 text-2xl md:text-3xl font-display bg-clip-text text-transparent bg-gradient-to-r from-white to-white/70">
+              My ultimate goal is to become one of the greatest tech and innovative minds the world has ever seen.
+            </strong>
+          </p>
+          <span className="absolute -bottom-16 -right-6 text-8xl text-white/5 font-serif font-bold pointer-events-none">"</span>
+        </motion.div>
+
+        <motion.div
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          viewport={{ once: true }}
+          transition={{ duration: 1, delay: 0.8 }}
+          className="mt-16 flex flex-col sm:flex-row items-center justify-center gap-6"
+        >
+          <div className="flex items-center gap-3 text-muted-foreground font-mono"><Zap size={20} className="text-accent" /> Focus</div>
+          <div className="hidden sm:block w-2 h-2 rounded-full bg-white/20" />
+          <div className="flex items-center gap-3 text-muted-foreground font-mono"><Rocket size={20} className="text-primary" /> Creativity</div>
+          <div className="hidden sm:block w-2 h-2 rounded-full bg-white/20" />
+          <div className="flex items-center gap-3 text-muted-foreground font-mono"><Target size={20} className="text-secondary" /> Persistence</div>
+        </motion.div>
+
+        <motion.p
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          viewport={{ once: true }}
+          transition={{ duration: 1, delay: 1 }}
+          className="mt-8 text-primary font-bold tracking-widest uppercase text-sm"
+        >
+          No idea is too big.
+        </motion.p>
+      </div>
+    </section>
+  );
+}
+
+
+================================================================================
+FILE 12: src/components/sections/FunFacts.tsx
+(Hover-lift fun fact cards)
+================================================================================
+
+import { motion } from "framer-motion";
+import { Lightbulb, Compass, Users } from "lucide-react";
+
+const facts = [
+  { icon: Compass,   title: "Explorer",        text: "I love exploring new games and tech challenges.",  color: "text-primary",   border: "border-primary/20",   bg: "hover:bg-primary/5" },
+  { icon: Users,     title: "Versatile",       text: "I enjoy both team sports and solo activities.",    color: "text-secondary", border: "border-secondary/20", bg: "hover:bg-secondary/5" },
+  { icon: Lightbulb, title: "Eternal Learner", text: "I'm always looking for ways to learn and grow.",  color: "text-accent",    border: "border-accent/20",    bg: "hover:bg-accent/5" },
+];
+
+export function FunFacts() {
+  return (
+    <section className="py-24 relative bg-background/50 border-y border-white/5">
+      <div className="max-w-7xl mx-auto px-6 md:px-12">
+        <div className="text-center mb-16">
+          <h2 className="text-3xl md:text-4xl font-display font-bold">Fun Facts About Me</h2>
+        </div>
+        <div className="grid md:grid-cols-3 gap-8">
+          {facts.map((fact, index) => (
+            <motion.div
+              key={index}
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.5, delay: index * 0.2 }}
+              whileHover={{ y: -10 }}
+              className={`interactive p-8 rounded-2xl glass-panel border ${fact.border} ${fact.bg} transition-all duration-300 text-center flex flex-col items-center`}
+            >
+              <div className={`p-4 rounded-full bg-card mb-6 shadow-lg border border-white/5 ${fact.color}`}>
+                <fact.icon size={32} />
+              </div>
+              <h4 className="text-xl font-bold mb-3">{fact.title}</h4>
+              <p className="text-muted-foreground">{fact.text}</p>
+            </motion.div>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+
+================================================================================
+FILE 13: src/components/sections/Contact.tsx
+(Contact section with Email and WhatsApp buttons)
+================================================================================
+
+import { motion } from "framer-motion";
+import { Mail, MessageCircle } from "lucide-react";
+
+export function Contact() {
+  return (
+    <section id="contact" className="py-32 relative">
+      <div className="max-w-3xl mx-auto px-6 md:px-12 text-center">
+        <motion.div
+          initial={{ opacity: 0, scale: 0.9 }}
+          whileInView={{ opacity: 1, scale: 1 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.5 }}
+          className="mb-8"
+        >
+          <h2 className="text-5xl md:text-7xl font-display font-black mb-6 text-glow">Let's Connect</h2>
+          <p className="text-xl text-muted-foreground">
+            I'd love to collaborate or just chat about tech, games, or innovative ideas!
+          </p>
+        </motion.div>
+
+        <motion.div
+          className="flex flex-col sm:flex-row items-center justify-center gap-6 mt-12"
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.5, delay: 0.2 }}
+        >
+          <a
+            href="mailto:josephenyojo0508@gmail.com"
+            className="interactive group relative w-full sm:w-auto flex items-center justify-center gap-3 px-8 py-4 bg-card border border-white/10 rounded-xl overflow-hidden hover:border-primary/50 transition-colors"
+          >
+            <div className="absolute inset-0 bg-primary/10 translate-y-full group-hover:translate-y-0 transition-transform duration-300 ease-out" />
+            <Mail className="relative z-10 text-primary" size={24} />
+            <span className="relative z-10 font-bold">Email Me</span>
+          </a>
+
+          <a
+            href="https://wa.me/2347017661771"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="interactive group relative w-full sm:w-auto flex items-center justify-center gap-3 px-8 py-4 bg-secondary text-white font-bold rounded-xl overflow-hidden shadow-[0_0_20px_rgba(138,43,226,0.3)] hover:shadow-[0_0_30px_rgba(138,43,226,0.6)] transition-all"
+          >
+            <div className="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-300 ease-out" />
+            <MessageCircle className="relative z-10" size={24} />
+            <span className="relative z-10 font-bold">WhatsApp</span>
+          </a>
+        </motion.div>
+
+        <motion.div
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          viewport={{ once: true }}
+          transition={{ duration: 1, delay: 0.6 }}
+          className="mt-24 pt-8 border-t border-white/10 text-muted-foreground flex flex-col items-center justify-center gap-2"
+        >
+          <p>Built with <span className="text-primary animate-pulse inline-block">⚡</span> by Simon Joseph</p>
+          <p className="text-sm font-mono opacity-50">Innovating the future, one line of code at a time.</p>
+        </motion.div>
+      </div>
+    </section>
+  );
+}
+
+
+================================================================================
+  END OF FILE — 13 files total
+  Built with React + Tailwind CSS + Framer Motion
+================================================================================
